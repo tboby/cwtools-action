@@ -48,4 +48,4 @@ else
   fi
 fi
 ruby /action/lib/cwtools.rb
-cat errors.txt | reviewdog -efm="%f:%l:%c:%m" -name="cwtools" -reporter=github-pr-check -level="warning"
+cat errors.txt | reviewdog -efm="%f:%l:%c:%m" -name="cwtools" -reporter=github-check -level="warning"
