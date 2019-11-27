@@ -1,19 +1,19 @@
 # Based on https://github.com/gimenete/rubocop-action by Alberto Gimeno published under MIT License.
 #
 # MIT License
-# 
+#
 # Copyright (c) 2019 Alberto Gimeno
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -110,7 +110,7 @@ def create_check
   resp = http.post(path, body.to_json, @headers)
 
   if resp.code.to_i >= 300
-    puts JSON.pretty_generate(resp.body)
+    STDERR.puts JSON.pretty_generate(resp.body)
     raise resp.message
   end
 
@@ -141,8 +141,14 @@ def update_check(id, conclusion, output)
   resp = http.patch(path, body.to_json, @headers)
 
   if resp.code.to_i >= 300
-    puts JSON.pretty_generate(resp.body)
+    STDERR.puts JSON.pretty_generate(resp.body)
     raise resp.message
+  end
+end
+
+def return_check(output)
+  output.annotations.each do |annotation|
+    puts annotation
   end
 end
 
@@ -157,18 +163,18 @@ end
 def run_cwtools
   annotations = []
   errors = nil
-  puts "Running CWToolsCLI now..."
+  STDERR.puts "Running CWToolsCLI now..."
   Dir.chdir(@GITHUB_WORKSPACE) do
     if !@CACHE_FULL
       puts "cwtools --game #{(@GAME == "stellaris") ? "stl" : @GAME} --directory \"#{@GITHUB_WORKSPACE}#{@MOD_PATH}\" --cachefile \"/#{(@GAME == "stellaris") ? "stl" : @GAME}.cwv.bz2\" --rulespath \"/src/cwtools-#{@GAME}-config\" validate --cachetype metadata --reporttype json --scope mods --outputfile output.json --languages #{@LOC_LANGUAGES} all"
-      `cwtools --game #{(@GAME == "stellaris") ? "stl" : @GAME} --directory "#{@GITHUB_WORKSPACE}#{@MOD_PATH}" --cachefile "/#{(@GAME == "stellaris") ? "stl" : @GAME}.cwv.bz2" --rulespath "/src/cwtools-#{@GAME}-config" validate --cachetype metadata --reporttype json --scope mods --outputfile output.json --languages #{@LOC_LANGUAGES} all`  
+      `cwtools --game #{(@GAME == "stellaris") ? "stl" : @GAME} --directory "#{@GITHUB_WORKSPACE}#{@MOD_PATH}" --cachefile "/#{(@GAME == "stellaris") ? "stl" : @GAME}.cwv.bz2" --rulespath "/src/cwtools-#{@GAME}-config" validate --cachetype metadata --reporttype json --scope mods --outputfile output.json --languages #{@LOC_LANGUAGES} all`
     else
       puts "cwtools --game #{(@GAME == "stellaris") ? "stl" : @GAME} --directory \"#{@GITHUB_WORKSPACE}#{@MOD_PATH}\" --cachefile \"/#{(@GAME == "stellaris") ? "stl" : @GAME}.cwb.bz2\" --rulespath \"/src/cwtools-#{@GAME}-config\" validate --cachetype full --reporttype json --scope mods --outputfile output.json --languages #{@LOC_LANGUAGES} all"
       `cwtools --game #{(@GAME == "stellaris") ? "stl" : @GAME} --directory "#{@GITHUB_WORKSPACE}#{@MOD_PATH}" --cachefile "/#{(@GAME == "stellaris") ? "stl" : @GAME}.cwb.bz2" --rulespath "/src/cwtools-#{@GAME}-config" validate --cachetype full --reporttype json --scope mods --outputfile output.json --languages #{@LOC_LANGUAGES} all`
     end
     errors = JSON.parse(`cat output.json`)
   end
-  puts "Done running CWToolsCLI..."
+  STDERR.puts "Done running CWToolsCLI..."
   conclusion = "success"
   count = { "failure" => 0, "warning" => 0, "notice" => 0 }
 
@@ -236,19 +242,19 @@ def run_cwtools
 end
 
 def run
-  puts "CWTOOLS CHECK"
+  STDERR.puts "CWTOOLS CHECK"
   unless defined?(@GITHUB_TOKEN)
     raise "GITHUB_TOKEN environment variable has not been defined"
   end
   if @is_pull_request
-    puts "Is pull request..."
+    STDERR.puts "Is pull request..."
   else
-    puts "Is commit..."
+    STDERR.puts "Is commit..."
   end
   if @CHANGED_ONLY
-    puts "Annotating only changed files..."
+    STDERR.puts "Annotating only changed files..."
   else
-    puts "Annotating all files..."
+    STDERR.puts "Annotating all files..."
   end
   id = create_check()
   begin
@@ -256,15 +262,15 @@ def run
     results = run_cwtools()
     conclusion = results["conclusion"]
     output = results["output"]
-    puts "Updating checks..."
+    STDERR.puts "Updating checks..."
     output.each do |o|
       update_check(id, nil, o)
     end
     #fail if conclusion == "failure"
     update_check(id, conclusion, nil)
   rescue => e
-    puts "Error during processing: #{$!}"
-    puts "Backtrace:\n\t#{e.backtrace.join("\n\t")}"
+    STDERR.puts "Error during processing: #{$!}"
+    STDERR.puts "Backtrace:\n\t#{e.backtrace.join("\n\t")}"
     update_check(id, "failure", nil)
     fail("There was an unhandled exception. Exiting with a non-zero error code...")
   end
