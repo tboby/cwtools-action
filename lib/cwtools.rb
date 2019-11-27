@@ -269,6 +269,7 @@ def run
     end
     #fail if conclusion == "failure"
     update_check(id, conclusion, nil)
+    STDERR.puts "Done"
   rescue => e
     STDERR.puts "Error during processing: #{$!}"
     STDERR.puts "Backtrace:\n\t#{e.backtrace.join("\n\t")}"
