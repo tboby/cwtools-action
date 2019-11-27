@@ -13,4 +13,6 @@ RUN apt-get update && \
   apt-get -y install \
   ruby bash git wget p7zip
 
+RUN wget -O - -q https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh| sh -s -- -b /usr/local/bin/ v0.9.13
+
 ENTRYPOINT ["/action/lib/entrypoint.sh"]

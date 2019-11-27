@@ -148,7 +148,7 @@ end
 
 def return_check(file, output)
   output["annotations"].each do |annotation|
-    file.puts annotation
+    file.puts "#{annotation["path"]}:#{annotation["start_line"]}:#{annotation["start_column"]}:#{annotation["message"]}"
   end
 end
 
