@@ -264,7 +264,7 @@ def run
     output = results["output"]
     STDERR.puts "Updating checks..."
     output.each do |o|
-      update_check(id, nil, o)
+      return_check(o)
     end
     #fail if conclusion == "failure"
     update_check(id, conclusion, nil)
