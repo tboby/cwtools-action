@@ -146,9 +146,9 @@ def update_check(id, conclusion, output)
   end
 end
 
-def return_check(output)
+def return_check(file, output)
   output["annotations"].each do |annotation|
-    puts annotation
+    file.puts annotation
   end
 end
 
@@ -263,8 +263,9 @@ def run
     conclusion = results["conclusion"]
     output = results["output"]
     STDERR.puts "Updating checks..."
+    file = File.open("errors.txt", "w")
     output.each do |o|
-      return_check(o)
+      return_check(file, o)
     end
     #fail if conclusion == "failure"
     update_check(id, conclusion, nil)

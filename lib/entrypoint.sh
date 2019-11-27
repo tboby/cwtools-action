@@ -27,7 +27,7 @@ cd /src/cwtools-$INPUT_GAME-config
 git fetch
 git checkout $INPUT_RULESREF
 
-CWB_GAME=$INPUT_GAME 
+CWB_GAME=$INPUT_GAME
 if [ "$INPUT_GAME" = "stellaris" ]; then
   CWB_GAME="stl"
 fi
@@ -48,3 +48,4 @@ else
   fi
 fi
 ruby /action/lib/cwtools.rb
+cat errors.txt
