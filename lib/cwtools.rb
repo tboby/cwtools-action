@@ -147,7 +147,7 @@ def update_check(id, conclusion, output)
 end
 
 def return_check(output)
-  output.annotations.each do |annotation|
+  output["annotations"].each do |annotation|
     puts annotation
   end
 end
