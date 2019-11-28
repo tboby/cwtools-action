@@ -256,9 +256,9 @@ def run
   else
     STDERR.puts "Annotating all files..."
   end
-  id = create_check()
+  #id = create_check()
   begin
-    get_changed_files()
+    #get_changed_files()
     results = run_cwtools()
     conclusion = results["conclusion"]
     output = results["output"]
@@ -268,12 +268,12 @@ def run
       return_check(file, o)
     end
     #fail if conclusion == "failure"
-    update_check(id, conclusion, nil)
+    #update_check(id, conclusion, nil)
     STDERR.puts "Done"
   rescue => e
     STDERR.puts "Error during processing: #{$!}"
     STDERR.puts "Backtrace:\n\t#{e.backtrace.join("\n\t")}"
-    update_check(id, "failure", nil)
+    #update_check(id, "failure", nil)
     fail("There was an unhandled exception. Exiting with a non-zero error code...")
   end
 end
