@@ -13,7 +13,7 @@ case $INPUT_GAME in
 esac
 
 dotnet tool install --global -v m CWTools.CLI
-export PATH="$PATH:/github/home/.dotnet/tools"
+export PATH="$PATH:/root/.dotnet/tools"
 
 cd /
 mkdir -p /src
