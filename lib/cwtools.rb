@@ -31,16 +31,16 @@ require 'set'
 @GITHUB_TOKEN = ENV["GITHUB_TOKEN"]
 @GITHUB_WORKSPACE = ENV["GITHUB_WORKSPACE"]
 
-@event = JSON.parse(File.read(ENV["GITHUB_EVENT_PATH"]))
-@repository = @event["repository"]
-@owner = @repository["owner"]["login"]
-@repo = @repository["name"]
-@GITHUB_SHA = ENV["GITHUB_SHA"]
+#@event = JSON.parse(File.read(ENV["GITHUB_EVENT_PATH"]))
+#@repository = @event["repository"]
+#@owner = @repository["owner"]["login"]
+#@repo = @repository["name"]
+#@GITHUB_SHA = ENV["GITHUB_SHA"]
 @is_pull_request = false
-unless @event["pull_request"].nil?
-  @GITHUB_SHA = @event["pull_request"]["head"]["sha"]
-  @is_pull_request = [@event["pull_request"]["base"]["ref"], @event["pull_request"]["head"]["ref"]]
-end
+#unless @event["pull_request"].nil?
+#  @GITHUB_SHA = @event["pull_request"]["head"]["sha"]
+#  @is_pull_request = [@event["pull_request"]["base"]["ref"], @event["pull_request"]["head"]["ref"]]
+#end
 @CHANGED_ONLY = ENV["INPUT_CHANGEDFILESONLY"]
 if @CHANGED_ONLY == '0' || @CHANGED_ONLY.downcase == 'false'
   @CHANGED_ONLY = false
