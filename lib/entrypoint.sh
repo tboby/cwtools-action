@@ -48,4 +48,6 @@ else
   fi
 fi
 ruby /action/lib/cwtools.rb
+cp errors.txt $CI_PROJECT_DIR/errors.txt
+cd $CI_PROJECT_DIR
 cat errors.txt | reviewdog -efm="%f:%l:%c:%m" -name="cwtools" -reporter=gitlab-mr-discussion
